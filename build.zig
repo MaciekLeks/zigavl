@@ -6,23 +6,30 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const lib = b.addStaticLibrary(.{
+    const lib = b.addLibrary(.{
         .name = package_name,
-        .root_source_file = .{ .src_path = .{ .owner = b,  .sub_path = package_path }},
-        .target = target,
-        .optimize = optimize,
+        .root_module = b.createModule(.{
+            .root_source_file = .{
+                .src_path = .{ .owner = b, .sub_path = package_path },
+            },
+            .target = target,
+            .optimize = optimize,
+        }),
+        .linkage = .static,
     });
 
     _ = b.addModule(package_name, .{
-        .root_source_file = .{ .src_path = .{ .owner = b,  .sub_path = package_path }},
+        .root_source_file = .{ .src_path = .{ .owner = b, .sub_path = package_path } },
     });
 
     b.installArtifact(lib);
 
     const main_tests = b.addTest(.{
-        .root_source_file = .{ .src_path = .{ .owner = b,  .sub_path = "src/tests.zig" }},
-        .target = target,
-        .optimize = optimize,
+        .root_module = b.createModule(.{
+            .root_source_file = .{ .src_path = .{ .owner = b, .sub_path = "src/tests.zig" } },
+            .target = target,
+            .optimize = optimize,
+        }),
     });
 
     const run_main_tests = b.addRunArtifact(main_tests);

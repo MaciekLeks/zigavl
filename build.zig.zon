@@ -1,6 +1,7 @@
 .{
-    .name = "zigavl",
-    .version = "0.1.0",
+    .name = .zigavl,
+    .version = "0.1.1",
+    .fingerprint = 0x5ddc07968c48ca47,
     .dependencies = .{},
     .paths = .{""},
 }
